@@ -8,6 +8,12 @@ public class Tetromino
 
 	Tetromino shadow;
 
+	// user preferences
+	static boolean wires = false;
+	static boolean borders = true;
+	static boolean realshadow = true;
+	static boolean playwithshadows = true;
+
 	int x = 100;
 	int y = 0;
 	Color c;
@@ -20,8 +26,10 @@ public class Tetromino
 	Tetromino(int kind)
 	{
 		this.kind = kind;
+
 		getRandomKind();
 		//		c = Color.cyan;
+		
 		shadow = new Tetromino(kind, false);
 		shadow.x = this.x;
 	}
@@ -30,8 +38,10 @@ public class Tetromino
 	{
 		this.kind = kind;
 		getRandomKind();
-		
-		c = new Color(55, 55, 55);
+
+		if (realshadow)
+			c = new Color(45, 45, 45);
+//			c = c.brighter().brighter().brighter().brighter().brighter();
 
 		if (isnextpiece)	// alternative is shadow
 		{
@@ -49,12 +59,14 @@ public class Tetromino
 		{
 			isshadow=true;
 		}
+		
+		if (!playwithshadows && isshadow)
+			c = Color.black;
 	}
 
 	public void getRandomKind()
 	{
 		//		kind = (int)(Math.random()*6);
-
 
 		if (kind == 0)		// Line piece
 		{
@@ -120,14 +132,32 @@ public class Tetromino
 		{
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[y][x])
-					g.fillRect(x*size+this.x-size, y*size+this.y-size, size, size);
+				{
+					if ((size==35 || isshadow) && !realshadow)
+						g.drawRect(x*size+this.x-size, y*size+this.y-size, size, size);
+					else
+					{
+						if (wires && (!realshadow && (isshadow || size==35)))
+							g.drawRect(x*size+this.x-size, y*size+this.y-size, size, size);
+						else
+							g.fillRect(x*size+this.x-size, y*size+this.y-size, size, size);
+
+						if (borders)
+						{
+							g.setColor(Color.black);
+							g.drawRect(x*size+this.x-size, y*size+this.y-size, size, size);
+							g.setColor(c);
+						}
+					}
+
+				}
 		}
 		// Draw a single square
 		//		g.fillRect(x, y, size, size);
 
 	}
 
-	public void drawShadow(Graphics g, boolean[][] board)
+	public void drawShadow(Graphics g, int[][] board)
 	{
 		// Draw the shadow
 		if (!isshadow)
@@ -137,17 +167,24 @@ public class Tetromino
 		}
 
 	}
-	
-	public void updateShadow(boolean[][] board)
+
+	public void updateShadow(int[][] board)
 	{
 		shadow.x = this.x;
 		shadow.y = this.y;
 		shadow.slam(board);
 	}
 
-	public static void drawSquare(Graphics g, int x, int y)
+	public static void drawSquare(Graphics g, Color c, int x, int y)
 	{
+		g.setColor(c);
 		g.fillRect(x*25, y*25, 25, 25);
+
+		if (borders)
+		{
+			g.setColor(Color.black);
+			g.drawRect(x*25, y*25, 25, 25);
+		}
 
 	}
 
@@ -173,34 +210,34 @@ public class Tetromino
 		return y/size;
 	}
 
-	public boolean canMoveRight(boolean [][] board)
+	public boolean canMoveRight(int[][] board)
 	{
 
 		for (int x=0; x<blocks.length; x++)
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[x][y])
-					if (y+getX()-1 == 9 || board[getX()+y][getY()+x-1])
+					if (y+getX()-1 == 9 || board[getX()+y][getY()+x-1]>0)
 						return false;
 		return true;
 	}
 
-	public boolean canMoveLeft(boolean [][] board)
+	public boolean canMoveLeft(int[][] board)
 	{
 		for (int x=0; x<blocks.length; x++)
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[x][y])
-					if (y+getX()-1 == 0 || board[getX()+y-2][getY()+x-1])
+					if (y+getX()-1 == 0 || board[getX()+y-2][getY()+x-1]>0)
 						return false;
 
 		return true;
 	}
 
-	public boolean canMoveDown(boolean [][] board) 
+	public boolean canMoveDown(int[][] board) 
 	{
 		for (int x=0; x<blocks.length; x++)
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[x][y])
-					if (getY()+x-1 == 19 || board[getX()+y-1][getY()+x])
+					if (getY()+x-1 == 19 || board[getX()+y-1][getY()+x] >0)
 						return false;
 
 		return true;
@@ -211,7 +248,7 @@ public class Tetromino
 		return x/size;
 	}
 
-	public void slam(boolean [][] board)
+	public void slam(int[][] board)
 	{
 		while (canMoveDown(board))
 			moveDown();
@@ -247,18 +284,18 @@ public class Tetromino
 			}
 
 			blocks = newblocks;
-			
+
 			if (!isshadow && shadow!=null)
 				shadow.rotate();
 		}
 	}
 
-	public void reportHit(boolean[][] board) 
+	public void reportHit(int[][] board) 
 	{
 		for (int x=0; x<blocks.length; x++)
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[x][y])
-					board[getX()+y-1][getY()+x-1] = true;
+					board[getX()+y-1][getY()+x-1] = kind+1;
 	}
 
 	public int getWidth() 

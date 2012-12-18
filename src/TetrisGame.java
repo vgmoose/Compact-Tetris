@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.*;
@@ -17,11 +16,11 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 	boolean gameover = false;
 
-	int interval = 200; //500
+	int interval = 400; //500
 
 	Tetromino active;
 	int nextone;
-	
+
 	int score;
 
 	private Container c;
@@ -34,7 +33,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 	Timer timer;
 
-	boolean [][] board;
+	int [][] board;
 
 	public TetrisGame()
 	{
@@ -56,7 +55,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 		this.addKeyListener(this);
 
-		board = new boolean[width][height];
+		board = new int[width][height];
 
 		c.add(tp);
 		showFrame();
@@ -109,17 +108,44 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 				//				for (Tetromino p : pieces)
 				//					if (p!=null)
 				//						p.drawPiece(g);
+
+				// draw splatters
+				for (int x=0; x<10; x++)
+					for (int y=0; y<20; y++)
+						if (board[x][y] > 0)
+						{
+							Color c;
+							switch(board[x][y]-1)
+							{
+							case 0:
+								c = Color.cyan;
+								break;
+							case 1: 
+								c = Color.magenta;
+								break;
+							case 2:
+								c = Color.yellow;
+								break;
+							case 3:
+								c = Color.orange;
+								break;
+							case 4:
+								c = Color.blue;
+								break;
+							case 5:
+								c = Color.green;
+								break;
+							default:
+								c = Color.white;
+							}
+							Tetromino.drawSquare(g,c,x,y);
+						}
+
 				if (active!=null)
 				{
 					active.drawShadow(g, board);
 					active.drawPiece(g);
 				}
-
-				// draw splatters
-				for (int x=0; x<10; x++)
-					for (int y=0; y<20; y++)
-						if (board[x][y])
-							Tetromino.drawSquare(g,x,y);
 			}
 
 		}
@@ -153,6 +179,30 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 			if (active.canMoveRight(board))
 				active.moveRight();
 
+		if (keycode == 49)
+			active.y = 0;
+
+		if (keycode == 50)
+			if (timer.isRunning())
+				timer.stop();
+			else
+				timer.start();
+
+		if (keycode == 51)
+			startNewPiece();
+		
+		if (keycode == 52)
+			Tetromino.playwithshadows = !Tetromino.playwithshadows;
+		
+		if (keycode == 55)
+			Tetromino.realshadow = !Tetromino.realshadow;
+
+		if (keycode == 56 )
+			Tetromino.wires = !Tetromino.wires;
+
+		if (keycode == 57)
+			Tetromino.borders = !Tetromino.borders;
+
 		repaint();
 	}
 
@@ -171,7 +221,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 	public void startNewPiece()
 	{
-		if (board[4][0] == true)
+		if (board[4][0] > 0)
 			gameover = true;
 		else
 		{
@@ -191,20 +241,20 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 	public void checkForClear()
 	{
 		int points = 0;
-		
+
 		for (int x=0; x<20; x++)
 		{
 			int count=0;
 
 			for (int y=0; y<10; y++)
 			{
-				if (board[y][x]) count++;
+				if (board[y][x] > 0) count++;
 			}
 
 			if (count==10)
 				points+=clearRow(x);
 		}
-		
+
 		if (points == 4) points = 10;
 		score += points*100;
 		setTitle("Score: "+score);
@@ -219,11 +269,14 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 			for (int y=0; y<10; y++)
 				board[y][x] = board[y][x-1];
 		}
-		
+
 		// clear the top row too
 		for (int x=0; x<10; x++)
-			board[0][x] = false;
+			board[0][x] = 0;
 		
+//		if (500 - (score/500)*50 != timer.getDelay())
+//			timer.setDelay(500 - (score/500)*50);
+
 		return 1;
 	}
 
@@ -243,7 +296,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 				active.moveDown();
 		}
 		repaint();
-		timer.start();
+		//		timer.start();
 
 	}
 }
