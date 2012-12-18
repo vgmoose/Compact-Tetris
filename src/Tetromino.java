@@ -302,4 +302,45 @@ public class Tetromino
 	{
 		return blocks.length;
 	}
+	
+	public void shadowify()
+	{
+		isshadow = true;
+		
+		getRandomKind();
+		rotate();
+
+		if (realshadow)
+			c = new Color(45, 45, 45);
+		
+		// stow shadow
+		shadow = null;
+		
+		size = 20;
+		x = 35;
+		
+		if (kind == 5)
+			x -= 20;
+		
+		y = 50;
+	}
+	
+	public void markActive()
+	{
+		isshadow = false;
+		
+		// restore shadow
+		shadow = new Tetromino(kind, false);
+		
+		size = 25;
+		
+		x = 100;
+		y = 0;
+		
+		shadow.x = this.x;
+		
+		getRandomKind();
+
+		
+	}
 }

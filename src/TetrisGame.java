@@ -14,11 +14,15 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 	static int width = 10;
 	static int height = 20;
 
+	boolean swappedonce = false;
+
 	boolean gameover = false;
 
 	int interval = 400; //500
 
 	Tetromino active;
+	Tetromino swapped;
+
 	int nextone;
 
 	int score;
@@ -58,7 +62,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 		board = new int[width][height];
 
 		c.add(tp);
-		showFrame();
+		popup();
 
 		timer = new Timer(interval, this);
 		timer.start();
@@ -66,7 +70,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 		startNewPiece();
 	}
 
-	public void showFrame(){
+	public void popup(){
 		this.pack();
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,21 +97,33 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 		public void paintComponent(Graphics g)
 		{
 			super.paintComponent(g);
+
 			g.setColor(Color.black);
 			g.fillRect(0,0,getWidth(),getHeight());
 
-			bgpiece.drawPiece(g);
 
 			if (gameover)
 			{
+				g.setColor(Color.white);
+				g.drawString("GAME OVER", 85, 40);
+				g.drawString("Try again next time!", 60, 100);
+				
+				g.drawString("Score: "+score, 80, 180);
+				g.drawString("Press ENTER to play again.", 40, 250);
 
 			}
 			else
 			{
+
+				bgpiece.drawPiece(g);
+
 				// Setup paint field
 				//				for (Tetromino p : pieces)
 				//					if (p!=null)
 				//						p.drawPiece(g);
+
+				if (swapped != null)
+					swapped.drawPiece(g);
 
 				// draw splatters
 				for (int x=0; x<10; x++)
@@ -156,8 +172,35 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 	{
 		int keycode = arg0.getKeyCode();
 
-		//		System.out.println(keycode);
+//		System.out.println(keycode);
+		
+		if (keycode == 10 && gameover)
+		{
+			TetrisHub.startNewGame();
+			dispose();
+		}
 
+		if ((keycode == 16 || keycode == 157) && !swappedonce)
+		{
+			if (swapped!=null)
+			{
+				Tetromino temp = active;
+				active = swapped;
+				swapped = temp;
+
+				active.markActive();
+				swapped.shadowify();
+			}
+			else
+			{
+				swapped = active;
+				swapped.shadowify();
+				startNewPiece();
+			}
+
+			swappedonce = true;
+
+		}
 
 		if ( keycode == 32)
 		{
@@ -190,10 +233,10 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 		if (keycode == 51)
 			startNewPiece();
-		
+
 		if (keycode == 52)
 			Tetromino.playwithshadows = !Tetromino.playwithshadows;
-		
+
 		if (keycode == 55)
 			Tetromino.realshadow = !Tetromino.realshadow;
 
@@ -241,6 +284,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 	public void checkForClear()
 	{
 		int points = 0;
+		swappedonce = false;
 
 		for (int x=0; x<20; x++)
 		{
@@ -273,9 +317,9 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 		// clear the top row too
 		for (int x=0; x<10; x++)
 			board[0][x] = 0;
-		
-//		if (500 - (score/500)*50 != timer.getDelay())
-//			timer.setDelay(500 - (score/500)*50);
+
+		//		if (500 - (score/500)*50 != timer.getDelay())
+		//			timer.setDelay(500 - (score/500)*50);
 
 		return 1;
 	}
