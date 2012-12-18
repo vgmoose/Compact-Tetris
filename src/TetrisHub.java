@@ -5,6 +5,5 @@ public class TetrisHub
 	{
 		TetrisGame tg = new TetrisGame();
 		tg.showFrame();
-
 	}
 }
