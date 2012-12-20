@@ -3,11 +3,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Serializable;
 import java.util.Random;
 
 import javax.swing.*;
 
-public class TetrisGame extends JFrame implements KeyListener, ActionListener
+public class TetrisGame extends JFrame implements KeyListener, ActionListener, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -18,7 +19,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 	boolean gameover = false;
 
-	int interval = 400; //500
+	int interval = 500;
 
 	Tetromino active;
 	Tetromino swapped;
@@ -86,6 +87,13 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 		// Move the window
 		setLocation(x, y);
+		
+		if (timer!=null)
+		{
+			timer.stop();
+			timer = new Timer(interval, this);
+			timer.start();
+		}
 
 		setResizable(false);
 	}
@@ -245,6 +253,17 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener
 
 		if (keycode == 57)
 			Tetromino.borders = !Tetromino.borders;
+		
+		if (keycode == 83) // S
+		{
+			TetrisHub.save(this);
+		}
+		
+		if (keycode == 82) // R
+		{
+			if (TetrisHub.restore())
+				dispose();
+		}
 
 		repaint();
 	}

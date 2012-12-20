@@ -1,9 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 
-public class Tetromino 
+public class Tetromino implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	int size = 25;
 
 	Tetromino shadow;
@@ -252,6 +255,26 @@ public class Tetromino
 	{
 		while (canMoveDown(board))
 			moveDown();
+	}
+	
+	public boolean canExist(int[][] board)
+	{
+		for (int x=0; x<blocks.length; x++)
+			for (int y=0; y<blocks.length; y++)
+				if (blocks[x][y])
+					if (getY()+x-1 == 0 || board[getX()+y-1][getY()+x-1] >0)
+						return false;
+
+		return true;
+	}
+	
+	public void rotate(int[][] board) throws CloneNotSupportedException
+	{
+		Tetromino a = (Tetromino) this.clone();
+		a.rotate();
+		
+		if (a.canExist(board))
+			rotate();
 	}
 
 	public void rotate() 
