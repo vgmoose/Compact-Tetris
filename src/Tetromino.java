@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import java.io.Serializable;
 
 
-public class Tetromino implements Serializable
+public class Tetromino implements Serializable, Cloneable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,7 @@ public class Tetromino implements Serializable
 
 		getRandomKind();
 		//		c = Color.cyan;
-		
+
 		shadow = new Tetromino(kind, false);
 		shadow.x = this.x;
 	}
@@ -44,7 +44,7 @@ public class Tetromino implements Serializable
 
 		if (realshadow)
 			c = new Color(45, 45, 45);
-//			c = c.brighter().brighter().brighter().brighter().brighter();
+		//			c = c.brighter().brighter().brighter().brighter().brighter();
 
 		if (isnextpiece)	// alternative is shadow
 		{
@@ -62,7 +62,7 @@ public class Tetromino implements Serializable
 		{
 			isshadow=true;
 		}
-		
+
 		if (!playwithshadows && isshadow)
 			c = Color.black;
 	}
@@ -256,25 +256,27 @@ public class Tetromino implements Serializable
 		while (canMoveDown(board))
 			moveDown();
 	}
-	
+
 	public boolean canExist(int[][] board)
 	{
 		for (int x=0; x<blocks.length; x++)
 			for (int y=0; y<blocks.length; y++)
 				if (blocks[x][y])
-					if (getY()+x-1 == 0 || board[getX()+y-1][getY()+x-1] >0)
+					if (getY()+x-1 < 0 || board[getX()+y-1][getY()+x-1] >0)
 						return false;
 
 		return true;
 	}
-	
+
 	public void rotate(int[][] board) throws CloneNotSupportedException
 	{
 		Tetromino a = (Tetromino) this.clone();
+		a.shadow = null;
 		a.rotate();
-		
+
 		if (a.canExist(board))
 			rotate();
+//		shadow.blocks = blocks;
 	}
 
 	public void rotate() 
@@ -325,45 +327,45 @@ public class Tetromino implements Serializable
 	{
 		return blocks.length;
 	}
-	
+
 	public void shadowify()
 	{
 		isshadow = true;
-		
+
 		getRandomKind();
 		rotate();
 
 		if (realshadow)
 			c = new Color(45, 45, 45);
-		
+
 		// stow shadow
 		shadow = null;
-		
+
 		size = 20;
 		x = 35;
-		
+
 		if (kind == 5)
 			x -= 20;
-		
+
 		y = 50;
 	}
-	
+
 	public void markActive()
 	{
 		isshadow = false;
-		
+
 		// restore shadow
 		shadow = new Tetromino(kind, false);
-		
+
 		size = 25;
-		
+
 		x = 100;
 		y = 0;
-		
+
 		shadow.x = this.x;
-		
+
 		getRandomKind();
 
-		
+
 	}
 }

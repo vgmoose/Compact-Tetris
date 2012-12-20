@@ -87,7 +87,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 
 		// Move the window
 		setLocation(x, y);
-		
+
 		if (timer!=null)
 		{
 			timer.stop();
@@ -115,7 +115,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 				g.setColor(Color.white);
 				g.drawString("GAME OVER", 85, 40);
 				g.drawString("Try again next time!", 60, 100);
-				
+
 				g.drawString("Score: "+score, 80, 180);
 				g.drawString("Press ENTER to play again.", 40, 250);
 
@@ -180,8 +180,8 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 	{
 		int keycode = arg0.getKeyCode();
 
-//		System.out.println(keycode);
-		
+		//		System.out.println(keycode);
+
 		if (keycode == 10 && gameover)
 		{
 			TetrisHub.startNewGame();
@@ -217,55 +217,60 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 		}
 
 		if (keycode == 38)
-			active.rotate();
+			try {
+				active.rotate(board);
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-		if (keycode == 40)
-			actionPerformed(null);
+			if (keycode == 40)
+				actionPerformed(null);
 
-		if (keycode == 37)
-			if (active.canMoveLeft(board))
-				active.moveLeft();
+			if (keycode == 37)
+				if (active.canMoveLeft(board))
+					active.moveLeft();
 
-		if (keycode == 39)
-			if (active.canMoveRight(board))
-				active.moveRight();
+			if (keycode == 39)
+				if (active.canMoveRight(board))
+					active.moveRight();
 
-		if (keycode == 49)
-			active.y = 0;
+			if (keycode == 49)
+				active.y = 0;
 
-		if (keycode == 50)
-			if (timer.isRunning())
-				timer.stop();
-			else
-				timer.start();
+			if (keycode == 50)
+				if (timer.isRunning())
+					timer.stop();
+				else
+					timer.start();
 
-		if (keycode == 51)
-			startNewPiece();
+			if (keycode == 51)
+				startNewPiece();
 
-		if (keycode == 52)
-			Tetromino.playwithshadows = !Tetromino.playwithshadows;
+			if (keycode == 52)
+				Tetromino.playwithshadows = !Tetromino.playwithshadows;
 
-		if (keycode == 55)
-			Tetromino.realshadow = !Tetromino.realshadow;
+			if (keycode == 55)
+				Tetromino.realshadow = !Tetromino.realshadow;
 
-		if (keycode == 56 )
-			Tetromino.wires = !Tetromino.wires;
+			if (keycode == 56 )
+				Tetromino.wires = !Tetromino.wires;
 
-		if (keycode == 57)
-			Tetromino.borders = !Tetromino.borders;
-		
-		if (keycode == 83) // S
-		{
-			TetrisHub.save(this);
-		}
-		
-		if (keycode == 82) // R
-		{
-			if (TetrisHub.restore())
-				dispose();
-		}
+			if (keycode == 57)
+				Tetromino.borders = !Tetromino.borders;
 
-		repaint();
+			if (keycode == 83) // S
+			{
+				TetrisHub.save(this);
+			}
+
+			if (keycode == 82) // R
+			{
+				if (TetrisHub.restore())
+					dispose();
+			}
+
+			repaint();
 	}
 
 	@Override
@@ -337,8 +342,8 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 		for (int x=0; x<10; x++)
 			board[0][x] = 0;
 
-		//		if (500 - (score/500)*50 != timer.getDelay())
-		//			timer.setDelay(500 - (score/500)*50);
+		if (500 - (score/500)*50 != timer.getDelay())
+			timer.setDelay(500 - (score/500)*50);
 
 		return 1;
 	}
