@@ -74,17 +74,17 @@ public class Tetromino implements Serializable, Cloneable
 		if (kind == 0)		// Line piece
 		{
 			boolean[][] t = 
-			{{ false, false, false, false},
+					{{ false, false, false, false},
 					{  true,  true,  true,  true},
 					{ false, false, false, false},
-					{ false, false, false, false}};  // pivot: 1,1
+					{ false, false, false, false}};  // pivot: 1,1 brb thanks for the musi 
 			blocks = t;
 			c = Color.cyan;
 		}
 		else if (kind == 1)		// T piece
 		{
 			boolean[][] t = 
-			{{ false, false, false},
+					{{ false, false, false},
 					{  true,  true,  true},
 					{ false,  true, false}};  // pivot: 1,1
 			blocks = t;
@@ -93,7 +93,7 @@ public class Tetromino implements Serializable, Cloneable
 		else if (kind == 2)		// square piece
 		{
 			boolean[][] t = 
-			{{  true,  true},
+					{{  true,  true},
 					{  true,  true}};  // pivot: none
 			blocks = t;
 			c = Color.yellow;
@@ -101,7 +101,7 @@ public class Tetromino implements Serializable, Cloneable
 		else if (kind == 3) 	// L piece
 		{
 			boolean[][] t = 
-			{{ false, false, false},
+					{{ false, false, false},
 					{  true,  true,  true},
 					{  true, false, false}};  // pivot: 1,1
 			blocks = t;
@@ -110,7 +110,7 @@ public class Tetromino implements Serializable, Cloneable
 		else if (kind == 4) 	// reverse L piece
 		{
 			boolean[][] t = 
-			{{ false, false, false},
+					{{ false, false, false},
 					{  true,  true,  true},
 					{ false, false,  true}};  // pivot: 1,1
 			blocks = t;
@@ -119,11 +119,20 @@ public class Tetromino implements Serializable, Cloneable
 		else if (kind == 5)
 		{
 			boolean[][] t = 
-			{{ false,  true,  true},
+					{{ false,  true,  true},
 					{  true,  true, false},
 					{ false, false, false}}; // pivot: 1,1
 			blocks = t;
 			c = Color.green;
+		}
+			else if (kind == 6)
+			{
+				boolean[][] t = 
+						{{ true,  true,  false},
+						{  false,  true, true},
+						{ false, false, false}}; // pivot: 1,1
+				blocks = t;
+				c = Color.red;
 		}
 	}
 
