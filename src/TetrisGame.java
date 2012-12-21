@@ -42,7 +42,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 
 	public TetrisGame()
 	{
-		super("Score: 0");
+		super("Score: 0");						
 		c = this.getContentPane();
 
 		tkind = new Random();
@@ -50,7 +50,6 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 		//		tkind.setSeed(Math.random());
 
 		nextone = tkind.nextInt(7);
-		nextPiece();
 		bgpiece = new Tetromino(nextone, true);
 
 		//		pieces = new ArrayList<Tetromino>();
@@ -343,7 +342,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 
 		// clear the top row too
 		for (int x=0; x<10; x++)
-			board[0][x] = 0;
+			board[x][0] = 0;
 
 		if (500 - (score/500)*50 != timer.getDelay())
 			timer.setDelay(500 - (score/500)*50);
