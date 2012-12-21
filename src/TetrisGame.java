@@ -49,7 +49,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 		//		tkind.setSeed(83249284);
 		//		tkind.setSeed(Math.random());
 
-		nextone = tkind.nextInt(6);
+		nextone = tkind.nextInt(7);
 		nextPiece();
 		bgpiece = new Tetromino(nextone, true);
 
@@ -158,6 +158,9 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 								break;
 							case 5:
 								c = Color.green;
+								break;
+							case 6:
+								c = Color.red;
 								break;
 							default:
 								c = Color.white;
@@ -301,7 +304,7 @@ public class TetrisGame extends JFrame implements KeyListener, ActionListener, S
 	public int nextPiece()
 	{
 		int returnme = nextone;
-		nextone = tkind.nextInt(6);
+		nextone = tkind.nextInt(7);
 		return returnme;
 	}
 
